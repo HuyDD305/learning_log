@@ -1,3 +1,21 @@
+# Ignore Python virtual environments
+venv/
+.env/
+*.egg-info/
 
-/.idea
-/learning_log/__pycache__
+# Ignore Python cache files
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Ignore IDE and editor-specific files
+.idea/
+.vscode/
+
+# Ignore system files
+.DS_Store
+Thumbs.db
+
+# Ignore your learning_log cache
+/learning_log/__pycache__/
