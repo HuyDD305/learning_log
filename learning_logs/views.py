@@ -18,3 +18,6 @@ def topic(request, topic_id):
     entries = topic.entry_set.order_by('-date_added')
     context = {'topic' : topic, 'entries' : entries} # Pass data to template
     return render(request, 'learning_logs/topic.html', context)
+
+def new_topic(request):
+    pass
