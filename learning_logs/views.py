@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 
-from .forms import TopicFrom
-from .models import Topic
+from .forms import TopicForm, EntryForm
+from .models import Topic, Entry
 
 # Create your views here.
 def index(request):
@@ -25,14 +25,50 @@ def new_topic(request):
     """Add a new topic for user"""
     if request.method != 'POST':
         #No data submitted; create a blank form.
-        form = TopicFrom()
+        form = TopicForm()
     else:
         #POST data submitted; process data.
-        form = TopicFrom(data=request.POST)
+        form = TopicForm(data=request.POST)
         if form.is_valid():
             form.save()
-            return redirect('learning_logs/topics')
 
     #Display a blank or invalid form.
-    context = {'from': form}
+    context = {'form': form}
     return render(request, 'learning_logs/new_topic.html', context)
+
+def new_entry(request, topic_id):
+    """Add a new entry for a particular topic."""
+    topic = Topic.objects.get(id=topic_id)
+
+    if request.method != 'POST':
+        # No data submitted; create a blank form.
+        form = EntryForm()
+    else:
+        # POST data submitted; process data
+        form = EntryForm(data=request.POST)
+        if form.is_valid():
+            new_entry = form.save(commit=False) #bao
+            new_entry.topic = topic
+            new_entry.save()
+            return redirect('learning_logs:topic', topic_id=topic_id)
+
+    #Display a blank or invalid form
+    context = {'topic' : topic, 'form' : form}
+    return render(request, 'learning_logs/new_entry.html', context)
+
+def edit_entry(request, entry_id):
+    """Edit an existing entry"""
+    entry = Entry.objects.get(id=entry_id)
+    topic = entry.topic
+
+    if request.method != 'POST':
+        #Initial request; pre-fill form with the current entry.
+        form = EntryForm(instance=entry)
+    else:
+        #Post data submitted; process data.
+        form = EntryForm(instance=entry, data=request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('learning_logs:topic', topic_id=topic.id)
+    context = {'entry' : entry, 'topic' : topic, 'form' : form}
+    return render(request, 'learning_logs/edit_entry.html', context)
