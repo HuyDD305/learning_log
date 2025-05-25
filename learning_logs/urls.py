@@ -1,4 +1,4 @@
-"""Defind URL pattens for learning_logs"""
+"""Defind URL pattens for learning_logs app"""
 
 from django.urls import path
 # import the path function, which is needed
